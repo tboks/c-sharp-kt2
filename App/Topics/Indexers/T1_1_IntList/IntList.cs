@@ -1,22 +1,56 @@
-// Topic: Indexers — T1.1 IntList (basic)
-// Задача: реализовать класс динамического списка целых чисел с индексатором this[int index].
-// Требования:
-// - Свойство Count — текущее количество элементов.
-// - Индексатор get должен бросать ArgumentOutOfRangeException при index < 0 или index >= Count.
-// - Индексатор set:
-//   * если index в диапазоне [0, Count-1] — заменить значение;
-//   * если index == Count — добавить значение в конец (расширение на 1);
-//   * если index > Count или index < 0 — бросать ArgumentOutOfRangeException.
-// Примечание: это упражнение тренирует базовую работу с индексатором.
-
 namespace App.Topics.Indexers.T1_1_IntList;
 
 public class IntList
 {
-    // Студенту:
-    // 1) Добавьте приватное хранилище (например, List<int> или массив с расширением).
-    // 2) Реализуйте свойство Count.
-    // 3) Реализуйте индексатор this[int index] с семантикой, описанной выше.
-    // 4) Добавьте конструктор(ы) при необходимости.
-    // Примечание: сейчас код преднамеренно пустой — требуется самостоятельная реализация.
+    private int[] data;
+    private int count;
+
+    public IntList()
+    {
+        data = new int[4];
+        count = 0;
+    }
+
+    public int Count => count;
+
+    public int this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= count)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            return data[index];
+        }
+        set
+        {
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            if (index == count)
+            {
+                EnsureCapacity(count + 1);
+                data[count] = value;
+                count++;
+            }
+            else if (index < count)
+            {
+                data[index] = value;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+        }
+    }
+
+    private void EnsureCapacity(int minCapacity)
+    {
+        if (data.Length < minCapacity)
+        {
+            int newCapacity = data.Length * 2;
+            if (newCapacity < minCapacity)
+                newCapacity = minCapacity;
+            Array.Resize(ref data, newCapacity);
+        }
+    }
 }

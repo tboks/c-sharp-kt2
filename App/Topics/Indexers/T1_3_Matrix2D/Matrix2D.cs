@@ -1,19 +1,47 @@
-// Topic: Indexers — T1.3 Matrix2D (2D indexer)
-// Задача: реализовать матрицу фиксированного размера с индексатором this[int row, int col].
-// Требования:
-// - Конструктор Matrix2D(int rows, int cols): rows>0, cols>0; иначе ArgumentOutOfRangeException.
-// - Свойства Rows, Cols — размеры.
-// - Хранение можно сделать во внутреннем одномерном массиве длиной rows*cols.
-// - Индексатор get/set с проверкой границ (row in [0, Rows), col in [0, Cols)), иначе ArgumentOutOfRangeException.
-// - Отображение (row, col) -> index: row * Cols + col.
-
 namespace App.Topics.Indexers.T1_3_Matrix2D;
+
+using System;
 
 public class Matrix2D
 {
-    // Студенту:
-    // 1) Добавьте приватное хранилище (одномерный массив) и размеры.
-    // 2) Реализуйте конструктор Matrix2D(int rows, int cols) с проверкой > 0.
-    // 3) Реализуйте свойства Rows, Cols.
-    // 4) Реализуйте индексатор this[int row, int col] c проверкой границ и отображением к одномерному индексу.
+    private int rows;
+    private int cols;
+    private double[] data;
+
+    public int Rows => rows;
+    public int Cols => cols;
+
+    public Matrix2D(int rows, int cols)
+    {
+        if (rows <= 0)
+            throw new ArgumentOutOfRangeException("строки должны быть больше 0", nameof(rows));
+        if (cols <= 0)
+            throw new ArgumentOutOfRangeException("столбцы должны быть больше 0", nameof(cols));
+
+        this.rows = rows;
+        this.cols = cols;
+        data = new double[rows * cols];
+    }
+
+    public double this[int row, int col]
+    {
+        get
+        {
+            ValidateIndices(row, col);
+            return data[row * cols + col];
+        }
+        set
+        {
+            ValidateIndices(row, col);
+            data[row * cols + col] = value;
+        }
+    }
+
+    private void ValidateIndices(int row, int col)
+    {
+        if (row < 0 || row >= rows)
+            throw new ArgumentOutOfRangeException(nameof(row));
+        if (col < 0 || col >= cols)
+            throw new ArgumentOutOfRangeException(nameof(col));
+    }
 }
